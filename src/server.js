@@ -83,7 +83,8 @@ app.post("/disciplina/:disciplinaId/matricular", async (req, res) =>{
     const {disciplinaId} = req.params
     const {alunoId} = req.body
 
-    const matricula = await prisma.matricula.create({
+    try{
+            const matricula = await prisma.matricula.create({
         data:{
             alunoId,
             disciplinaId
@@ -91,6 +92,9 @@ app.post("/disciplina/:disciplinaId/matricular", async (req, res) =>{
     })
 
     return res.status(201).json("matriculado com sucesso", matricula)
+    }catch{
+        res.status(500).json("Erro interno no servidor")
+    }
 })
 
 
