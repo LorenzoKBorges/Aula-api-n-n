@@ -23,6 +23,17 @@ app.get("/aluno", async (req, res) =>{
 
 })
 
+app.get("/disciplina", async (req, res) =>{
+
+    try{
+        const disciplinas = await prisma.disciplina.findMany()
+        res.json(disciplinas)
+    }catch{
+        res.status(500).json("Erro no servidor")
+    }
+
+})
+
 
 
 
@@ -44,10 +55,43 @@ app.post("/aluno", async (req, res) =>{
 
         return res.status(201).json(novoAluno)
     }catch{
-        res.statys(500).json("Erro no Servidor")
+        res.status(500).json("Erro no Servidor")
     }
 })
 
+app.post("/disciplina", async (req, res) =>{
+    const {nome, cargaHoraria} = req.body
+
+    // try{
+        const novaDisciplina = await prisma.disciplina.create({
+            data:{
+            nome,
+            cargaHoraria,
+            },
+        });
+
+        return res.status(201).json(novaDisciplina)
+    // }catch{
+        // res.status(500).json("Erro no Servidor")
+    // }
+})
+
+
+
+
+app.post("/disciplina/:disciplinaId/matricular", async (req, res) =>{
+    const {disciplinaId} = req.params
+    const {alunoId} = req.body
+
+    const matricula = await prisma.matricula.create({
+        data:{
+            alunoId,
+            disciplinaId
+        }
+    })
+
+    return res.status(201).json("matriculado com sucesso", matricula)
+})
 
 
 //===================================================================
@@ -96,7 +140,6 @@ app.delete("/aluno/:id", async (req, res) =>{
         res.status(500).json("Erro no Servidor")
     }
 })
-
 
 
 
